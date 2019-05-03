@@ -1,0 +1,31 @@
+sudo: required
+
+services:
+- docker
+
+env:
+  global:
+  - DOCKER_USERNAME=guillaumejacquenot
+  - secure: "LdtqMi6SeELJwhG2HC4ptNvhXemJ8FrxlmxNGRfCQCVvu8pyaRfUs8u8hcUDaGsFEsOjDb03s50PH8eUXNHXvC6URvzIMa1PB5yxGinncFUTPl/dOl5HzkSGS7f2pT6dKUG5GhroGDoGHKwW0T3OkcKsKx1uAXJH9KuxwSaUyGcPdYtR4tLZyqPBMRkttH3VkAN1ndE6qtsQ0OTmhHXiOdVZnD+66+ff3o1mpTUJwuorYZF44SAm3TXzH4wPKdoaGNRGkGO8reby3NvIttv4j6AICrIJ/Suvs7gsFixwlQW/lyy8sfqLto8OzTN9ZDH4ymdZCmYdL6nmcXGOSRFpNXoXEjSCy/hsELNBh8BzO0TORujrwZB9Ssm/705iHeLKFI8PLtXklNK5XHT0SXI/jvp/G3BO3in3dLMmJsk28VR9VfdH3HYyiYruCVejBHQU6e6LOWGHa9kBCDUm44uLRGMTa4cc3zuyMuZUmy2j+GUoTOKOhaNDLSR3jS0O4ZMCAcx+MlxDV+ai+OX2OLMJ5rW6t9C/r0DFMzB0wivK581W+2HvZBEZKdonGU6KZyZ80rOD56HqxbvgKf8H5L5USh+zvmAxdk6HB2wZaMC/yXS9x9Lsj4y2msohS9QIa8lL+HF9CnE1s8OBz3dKIYlvstigCW/VcX+3oTGEioMJw7E="
+
+before_install:
+- echo "Before install"
+
+before_script:
+- docker pull sirehna/base-image-win64-gccx-posixthreads-ssc-xdyn || true
+
+script:
+- docker build --pull --cache-from sirehna/base-image-win64-gccx-posixthreads-ssc-xdyn --tag sirehna/base-image-win64-gccx-posixthreads-ssc-xdyn .
+
+after_script:
+- docker images
+
+after_success:
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
+  docker push sirehna/base-image-win64-gccx-posixthreads-ssc-xdyn ;
+  fi
+
+notifications:
+  email: true
+
