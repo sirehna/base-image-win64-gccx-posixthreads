@@ -105,8 +105,15 @@ echo '\#!/bin/bash\n\
 /usr/bin/wine /opt/protobuf/bin/protoc.exe `echo $*`\n'\
 > /usr/bin/protoc && \
 sed -i 's/\\#/#/g' /usr/bin/protoc && \
-chmod 740 /usr/bin/protoc && \
-cat /usr/bin/protoc
+chmod 755 /usr/bin/protoc && \
+cat /usr/bin/protoc && \
+cd / && \
+echo '\#!/bin/bash\n\
+/usr/bin/wine /opt/protobuf/bin/protoc.exe `echo $*` 2> /dev/null\n'\
+> /usr/bin/protoc_silent_error && \
+sed -i 's/\\#/#/g' /usr/bin/protoc_silent_error && \
+chmod 755 /usr/bin/protoc_silent_error && \
+cat /usr/bin/protoc_silent_error
 
 # libzmq
 # Test program needs to be linked to ws_32 library.
@@ -223,23 +230,3 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-1.8/hdf5-1.8.2
     rm -rf HDF5_build && \
     rm -rf HDF5_SRC && \
     rm -rf hdf5_src.tar.gz
-
-## pandoc
-#RUN wget https://github.com/jgm/pandoc/releases/download/2.1.3/pandoc-2.1.3-linux.tar.gz -O pandoc.tar.gz && \
-#    mkdir pandoc_bin && \
-#    cd pandoc_bin && \
-#    tar -xzf ../pandoc.tar.gz --strip 1 && \
-#    ls && \
-#    cp bin/* /usr/bin && \
-#    cd .. && \
-#    rm -rf pandoc_bin pandoc.tar.gz
-#
-#
-## Added python dependencies: numpy and matplotlib
-## matplotlib also requires subprocess32 that can be installed with
-## debian package manager : python-subprocess32
-#RUN python -m pip install matplotlib numpy && \
-#    sed -i 's/^backend .*/backend : Agg/' `python -c'import matplotlib;print(matplotlib.matplotlib_fname())'`
-
-# ADD protoc /usr/bin/protoc
-
