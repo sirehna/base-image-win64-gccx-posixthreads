@@ -176,36 +176,36 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-1.8/hdf5-1.8.2
     mkdir -p HDF5_SRC && \
     tar -xf hdf5_src.tar.gz --strip 1 -C HDF5_SRC && \
     cd HDF5_SRC && \
-    # Patch CMakeLists.txt to avoid warning message for each compiled file
+    echo "COMMENT Patch CMakeLists.txt to avoid warning message for each compiled file" && \
     cp CMakeLists.txt CMakeListsORI.txt && \
     awk 'NR==3{print "ADD_DEFINITIONS(-DH5_HAVE_RANDOM=0)"}1' CMakeListsORI.txt > CMakeLists.txt && \
-    # diff CMakeListsORI.txt CMakeLists.txt && \
+    echo "COMMENT diff CMakeListsORI.txt CMakeLists.txt" && \
     rm CMakeListsORI.txt && \
-    # Patch src/CMakeLists.txt to work with wine when running a program while configuring/compiling
+    echo "COMMENT Patch src/CMakeLists.txt to work with wine when running a program while configuring/compiling" && \
     cd src && \
     cp CMakeLists.txt CMakeListsORI.txt && \
     sed -i 's/COMMAND\ \${CMD}/COMMAND wine \${CMD}/g' CMakeLists.txt && \
-    # diff CMakeListsORI.txt CMakeLists.txt && \
+    echo "COMMENT diff CMakeListsORI.txt CMakeLists.txt" && \
     cd .. && \
-    # Patch fortran/src/CMakeLists.txt
+    echo "COMMENT Patch fortran/src/CMakeLists.txt" && \
     cd fortran && \
     cd src && \
     cp CMakeLists.txt CMakeListsORI.txt && \
     sed -i 's/COMMAND\ \${CMD}/COMMAND wine \${CMD}/g' CMakeLists.txt && \
-    # diff CMakeListsORI.txt CMakeLists.txt && \
+    echo "COMMENT diff CMakeListsORI.txt CMakeLists.txt" && \
     cd .. && \
     cd .. && \
-    # Patch hl/fortran/src/CMakeLists.txt
+    echo "COMMENT Patch hl/fortran/src/CMakeLists.txt" && \
     cd hl && \
     cd fortran && \
     cd src && \
     cp CMakeLists.txt CMakeListsORI.txt && \
     sed -i 's/COMMAND\ \${CMD}/COMMAND wine \${CMD}/g' CMakeLists.txt && \
-    # diff CMakeListsORI.txt CMakeLists.txt && \
+    echo "COMMENT diff CMakeListsORI.txt CMakeLists.txt" && \
     cd .. && \
     cd .. && \
     cd .. && \
-    # Move back
+    echo "COMMENT Move back" && \
     cd .. && \
     mkdir -p HDF5_build && \
     cd HDF5_build && \
@@ -219,12 +219,12 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-1.8/hdf5-1.8.2
       -DHDF5_BUILD_CPP_LIB:BOOL=ON \
       -DHDF5_BUILD_FORTRAN:BOOL=ON \
       ../HDF5_SRC && \
-    # Patch cmake files
-    # http://hdf-forum.184993.n3.nabble.com/Compilation-of-HDF5-1-10-1-with-MSYS-and-MiNGW-td4029696.html
-    # sed -i 's/\r//g' H5config_f.inc && \
-    # sed -i 's/\r//g' fortran/H5fort_type_defines.h && \
+    echo "COMMENT Patch cmake files" && \
+    echo "COMMENT http://hdf-forum.184993.n3.nabble.com/Compilation-of-HDF5-1-10-1-with-MSYS-and-MiNGW-td4029696.html" && \
+    echo "COMMENT sed -i 's/\r//g' H5config_f.inc" && \
+    echo "COMMENT sed -i 's/\r//g' fortran/H5fort_type_defines.h" && \
     make && \
-    # Fixed Fortran mod install bug
+    echo "COMMENT Fixed Fortran mod install bug" && \
     mkdir -p bin/static/Release && \
     cp bin/static/*.mod bin/static/Release/. && \
     make install && \
