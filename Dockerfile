@@ -8,7 +8,10 @@ WORKDIR /opt
 
 # BOOST
 RUN cd /usr/src/mxe &&  \
-    make TARGET=x86_64-w64-mingw32.static.posix boost bzip2_URL=force_mirror.org && \
+    make TARGET=x86_64-w64-mingw32.static.posix bzip2 && \
+    make TARGET=x86_64-w64-mingw32.static.posix boost && \
+    make TARGET=x86_64-w64-mingw32.static.posix openssl && \
+    make TARGET=x86_64-w64-mingw32.static.posix zlib && \
     rm -rf /usr/src/mxe/pkg/*
 
 # BOOST Geometry extension
