@@ -151,3 +151,143 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-1.8/hdf5-1.8.2
     rm -rf HDF5_build && \
     rm -rf HDF5_SRC && \
     rm -rf hdf5_src.tar.gz
+
+# Install GRPC with its dependencies
+# C-Ares
+RUN wget https://github.com/c-ares/c-ares/releases/download/cares-1_15_0/c-ares-1.15.0.tar.gz -O cares_src.tgz && \
+    mkdir -p /opt/CAres && \
+    mkdir -p cares_src && \
+    tar -xf cares_src.tgz --strip 1 -C cares_src && \
+    rm -rf cares_src.tgz && \
+    cd cares_src && \
+    mkdir cares_build && \
+    cd cares_build && \
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=/opt/CAres \
+        -DCARES_STATIC:BOOL=ON \
+        -DCARES_SHARED:BOOL=OFF \
+    && \
+    make && \
+    make install && \
+    cd .. && \
+    cd .. && \
+    rm -rf cares_src
+
+# Patch macro _WIN32_WINNT that defines the Windows version in _mingw.h
+# GRPC requires at least 0x600, we change this value manually
+RUN cd / && \
+echo '--- /usr/src/mxe/usr/x86_64-w64-mingw32.static.posix/include/_mingw.h      2019-04-14 20:27:59.209176000 +0000\n\
++++ /usr/src/mxe/usr/x86_64-w64-mingw32.static.posix/include/_mingw.h   2019-04-14 20:28:34.934280000 +0000\n\
+@@ -229,7 +229,7 @@\n\
+ \n\
+ \n\
+ \#ifndef _WIN32_WINNT\n\
+-\#define _WIN32_WINNT 0x502\n\
++\#define _WIN32_WINNT 0x600\n\
+ \#endif\n\
+ \n\
+ \#ifndef _INT128_DEFINED\n'\
+> p.patch && \
+sed -i 's/\\#/#/g' p.patch && \
+patch -p0 < p.patch && \
+rm p.patch
+
+# GRPC
+ENV GRPC_RELEASE_TAG v1.20.0
+RUN mkdir -p /opt/.wine && \
+    export WINEPREFIX=/opt/.wine && \
+    wine winecfg && \
+    git clone -b ${GRPC_RELEASE_TAG} https://github.com/grpc/grpc /opt/grpc_src && \
+    cd /opt/grpc_src && \
+    git submodule update --init && \
+    cd /opt/grpc_src && \
+echo '--- include/grpc/impl/codegen/port_platform.h      2019-04-14 12:26:20.932354000 +0000\n\
++++ include/grpc/impl/codegen/port_platform_new.h  2019-04-14 12:26:40.121945000 +0000\n\
+@@ -39,6 +39,8 @@\n\
+ \#define NOMINMAX\n\
+ \#endif /* NOMINMAX */\n\
+ \n\
++\#include <windows.h>\n\
++\n\
+ \#ifndef _WIN32_WINNT\n\
+ \#error \\\n\
+     "Please compile grpc with _WIN32_WINNT of at least 0x600 (aka Windows Vista)"\n\
+@@ -49,8 +51,6 @@\n\
+ \#endif /* _WIN32_WINNT < 0x0600 */\n\
+ \#endif /* defined(_WIN32_WINNT) */\n\
+ \n\
+-\#include <windows.h>\n\
+-\n\
+ \#ifdef GRPC_WIN32_LEAN_AND_MEAN_WAS_NOT_DEFINED\n\
+ \#undef GRPC_WIN32_LEAN_AND_MEAN_WAS_NOT_DEFINED\n\
+ \#undef WIN32_LEAN_AND_MEAN\n'\
+> p.patch && \
+sed -i 's/\\#/#/g' p.patch && \
+patch -p0 < p.patch && \
+rm p.patch && \
+cd /opt/grpc_src/ && \
+    echo "--- installing grpc ---" && \
+    cd /opt/grpc_src/third_party/protobuf && \
+    cd cmake && \
+    mkdir build && \
+    cd build && \
+    cmake .. \
+        -Dprotobuf_BUILD_TESTS:BOOL=OFF \
+        -Dprotobuf_BUILD_CONFORMANCE:BOOL=OFF \
+        -Dprotobuf_BUILD_EXAMPLES:BOOL=OFF \
+        -Dprotobuf_BUILD_PROTOC_BINARIES:BOOL=ON \
+        -DBUILD_SHARED_LIBS:BOOL=OFF \
+        -Dprotobuf_BUILD_SHARED_LIBS_DEFAULT:BOOL=OFF \
+        -Dprotobuf_WITH_ZLIB_DEFAULT:BOOL=ON \
+        -DCMAKE_INSTALL_PREFIX=/opt/ProtoBuf \
+    && \
+    make install && \
+    cd .. && \
+    cd .. && \
+    cd ../.. && \
+    cd /opt/grpc_src && \
+    echo "--- installing grpc ---" && \
+    cd /opt/grpc_src && \
+    sed -i 's/Windows/windows/g' third_party/benchmark/src/colorprint.cc && \
+    sed -i 's/Windows/windows/g' third_party/benchmark/src/sleep.cc && \
+    sed -i 's/Shlwapi/shlwapi/g' third_party/benchmark/src/sysinfo.cc && \
+    sed -i 's/VersionHelpers/versionhelpers/g' third_party/benchmark/src/sysinfo.cc && \
+    sed -i 's/Windows/windows/g' third_party/benchmark/src/sysinfo.cc && \
+    sed -i 's/Shlwapi/shlwapi/g' third_party/benchmark/src/timers.cc && \
+    sed -i 's/VersionHelpers/versionhelpers/g' third_party/benchmark/src/timers.cc && \
+    sed -i 's/Windows/windows/g' third_party/benchmark/src/timers.cc && \
+    sed -i 's/IswindowsXPOrGreater/IsWindowsXPOrGreater/g' third_party/benchmark/src/sysinfo.cc && \
+    sed -i 's/Shlwapi/shlwapi/g' third_party/benchmark/src/CMakeLists.txt && \
+    sed -i 's/COMMAND\ \${_gRPC_PROTOBUF_PROTOC_EXECUTABLE}/COMMAND wine \/opt\/ProtoBuf\/bin\/protoc.exe-3.7.0.0/g' CMakeLists.txt && \
+    sed -i 's/set(_gRPC_CPP_PLUGIN \$<TARGET_FILE:grpc_cpp_plugin>)/set(_gRPC_CPP_PLUGIN \$\{CMAKE_CURRENT_BINARY_DIR\}\/grpc_cpp_plugin.exe)/g' CMakeLists.txt && \
+    sed -i 's/generate_mock_code=true:\$/generate_mock_code=true:Z:\$/g' CMakeLists.txt && \
+    sed -i 's/cpp_out=\$/cpp_out=Z:\$/g' CMakeLists.txt && \
+    sed -i 's/\${_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR}/Z:\${_gRPC_PROTOBUF_WELLKNOWN_INCLUDE_DIR}/g' CMakeLists.txt && \
+    sed -i 's/find_package(Protobuf REQUIRED \${gRPC_PROTOBUF_PACKAGE_TYPE})/find_package(Protobuf REQUIRED PATHS \/opt\/ProtoBuf\/lib\/cmake)/g' cmake/protobuf.cmake && \
+    mkdir grpc_build && \
+    cd grpc_build && \
+    cmake .. \
+        -DgRPC_INSTALL:BOOL=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/opt/GRPC \
+        -DCMAKE_CROSSCOMPILING:BOOL=OFF \
+        -DgRPC_BUILD_CSHARP_EXT:BOOL=OFF \
+        -DgRPC_BUILD_TESTS:BOOL=OFF \
+        -DgRPC_BUILD_CODEGEN:BOOL=ON \
+        -DgRPC_BACKWARDS_COMPATIBILITY_MODE:BOOL=OFF \
+        -DgRPC_ZLIB_PROVIDER:STRING=package \
+        -DZLIB_ROOT:STRING=/usr/src/mxe/usr/x86_64-w64-mingw32.static.posix \
+        -DgRPC_PROTOBUF_PROVIDER:STRING=package \
+        -DgRPC_PROTOBUF_PACKAGE_TYPE:STRING=/opt/ProtoBuf/lib/cmake/protobuf \
+        -DgRPC_CARES_PROVIDER:STRING=package \
+        -Dc-ares_DIR:PATH=/opt/CAres/lib/cmake/c-ares \
+        -DgRPC_SSL_PROVIDER:STRING=package \
+        -DOPENSSL_ROOT_DIR:PATH=/usr/src/mxe/usr/x86_64-w64-mingw32.static.posix \
+    && \
+    make grpc_cpp_plugin && \
+    make && \
+    make install && \
+    cd .. && \
+    cd .. && \
+    rm -rf /opt/grpc_src
+
