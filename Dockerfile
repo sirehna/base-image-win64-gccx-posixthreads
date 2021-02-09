@@ -1,7 +1,11 @@
 # docker run -it dockcross/windows-x64-posix:latest /bin/bash
 # docker images --digests | grep dockcross/windows-static-x64-posix
 # FROM dockcross/windows-static-x64-posix:latest
-FROM dockcross/windows-static-x64-posix@sha256:14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c
+# Previous SHA:
+# - 14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c
+# - 8fdf2abd24a3b82f8162fbba767cb18c4e8ba7f0f7d6f0107d4a897cb332289c -> tag: 20210109-7e58f93
+
+FROM dockcross/windows-static-x64-posix@sha256:8fdf2abd24a3b82f8162fbba767cb18c4e8ba7f0f7d6f0107d4a897cb332289c
 
 RUN mkdir -p /opt
 WORKDIR /opt
