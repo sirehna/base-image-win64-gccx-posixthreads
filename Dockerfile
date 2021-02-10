@@ -3,7 +3,7 @@
 # FROM dockcross/windows-static-x64-posix:latest
 # Previous SHA:
 # - 14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c
-# - a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e -> tag: 20210109-7e58f93
+# - a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e -> tag: 20210109-7e58f93, gcc10.2 version
 
 FROM dockcross/windows-static-x64-posix@sha256:a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e
 
