@@ -2,7 +2,7 @@
 # docker images --digests | grep dockcross/windows-static-x64-posix
 # FROM dockcross/windows-static-x64-posix:latest
 # Previous SHA:
-# - 14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c
+# - 14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c -> gcc5.5 version
 # - a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e -> tag: 20210109-7e58f93, gcc10.2 version
 
 FROM dockcross/windows-static-x64-posix@sha256:a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e
@@ -11,7 +11,7 @@ RUN mkdir -p /opt
 WORKDIR /opt
 
 # MXE packages: Bzip2, BOOST, OpenSSL, ZLib
-RUN cd /usr/src/mxe &&  \
+RUN cd /usr/src/mxe && \
     make TARGET=x86_64-w64-mingw32.static.posix bzip2 && \
     make TARGET=x86_64-w64-mingw32.static.posix boost && \
     make TARGET=x86_64-w64-mingw32.static.posix openssl && \
