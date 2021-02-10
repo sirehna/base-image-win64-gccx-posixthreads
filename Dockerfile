@@ -26,10 +26,10 @@ RUN git clone https://github.com/boostorg/geometry && \
     cd .. && \
     rm -rf geometry
 
-# Ipopt 3.12.9
+# Ipopt 3.13.3
 # http://www.coin-or.org/Ipopt/documentation/node10.html
 # Command 'make test' is disabled : wine has to be used to run tests
-RUN wget http://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.9.tgz -O ipopt_src.tgz && \
+RUN wget http://www.coin-or.org/download/source/Ipopt/Ipopt-3.13.3.tgz -O ipopt_src.tgz && \
     mkdir -p /opt/CoinIpopt && \
     mkdir -p ipopt_src && \
     tar -xf ipopt_src.tgz --strip 1 -C ipopt_src && \
