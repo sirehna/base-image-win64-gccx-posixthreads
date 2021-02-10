@@ -4,6 +4,10 @@
 #
 # Previous SHA:
 # - 14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c -> gcc5.5 version
+# - b8be5e48c1c2c4c4cd29bd6a33aca74c67f6d4eaadd7a70d50b6abf3e78ac195 -> tag: 20191024-7b02705, gcc 5.5.0 version
+# - f660003a2fd206cea4a60f33713b0bd1d80b107a1c6595f3978e57a944b70cc8 -> tag: 20200120-1c10fb2, gcc 9.2.0 version
+# - 99f6baace2cdcd0a737c0f6722f9c60294e74a6dc2184f07be5dffc9d2b397b2 -> tag: 20200406-4e5c364, gcc 9.2.0 version
+# - 81ca7146c9dac940d7b81cd63f2a8d8ed9d237e75c48de0e6e4cb1e6f2ad15a0 -> tag: 20200526-258041d, gcc 9.2.0 version
 # - 8a330f2910f4c1cad9ff4bf46b4b9579028484c34a4f984e09f8466fd6ec9fd0 -> tag: 20201116-0216d09, gcc 9.2.0 version
 # - a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e -> tag: 20210109-7e58f93, gcc 10.2 version
 #
@@ -11,10 +15,8 @@
 #
 # docker images --digests dockcross/windows-static-x64-posix
 FROM dockcross/windows-static-x64-posix@sha256:a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e
-
 RUN mkdir -p /opt
 WORKDIR /opt
-
 # MXE packages: Bzip2, BOOST, OpenSSL, ZLib
 RUN cd /usr/src/mxe && \
     make TARGET=x86_64-w64-mingw32.static.posix bzip2 && \
@@ -31,7 +33,7 @@ RUN git clone https://github.com/boostorg/geometry && \
     cd .. && \
     rm -rf geometry
 
-# Ipopt 3.12 is the last version to ship thirdpary dependencies
+# Ipopt 3.12 is the last version to ship thirdparty dependencies
 # Ipopt 3.13 and higher require to download
 # Using GFortan 10 requires additional Fortran flags for Mumps 4.10
 # See https://github.com/coin-or-tools/ThirdParty-Mumps/issues/4
