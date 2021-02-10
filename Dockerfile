@@ -286,9 +286,10 @@ cd /opt/grpc_src/ && \
         -DgRPC_BUILD_CODEGEN:BOOL=ON \
         -DgRPC_BACKWARDS_COMPATIBILITY_MODE:BOOL=OFF \
         -DgRPC_ZLIB_PROVIDER:STRING=package \
-        -DZLIB_ROOT:STRING=/usr/src/mxe/usr/x86_64-w64-mingw32.static.posix \
+        -DZLIB_ROOT:PATH=/usr/src/mxe/usr/x86_64-w64-mingw32.static.posix \
         -DgRPC_PROTOBUF_PROVIDER:STRING=package \
-        -DgRPC_PROTOBUF_PACKAGE_TYPE:STRING=/opt/ProtoBuf/lib/cmake/protobuf \
+        -DgRPC_PROTOBUF_PACKAGE_TYPE:PATH=/opt/ProtoBuf/lib/cmake/protobuf \
+        -DProtobuf_DIR:PATH=/opt/ProtoBuf/lib/cmake/protobuf \
         -DgRPC_CARES_PROVIDER:STRING=package \
         -Dc-ares_DIR:PATH=/opt/CAres/lib/cmake/c-ares \
         -DgRPC_SSL_PROVIDER:STRING=package \
@@ -300,4 +301,3 @@ cd /opt/grpc_src/ && \
     cd .. && \
     cd .. && \
     rm -rf /opt/grpc_src
-
