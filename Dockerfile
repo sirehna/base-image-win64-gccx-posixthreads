@@ -26,10 +26,13 @@ RUN git clone https://github.com/boostorg/geometry && \
     cd .. && \
     rm -rf geometry
 
-# Ipopt 3.13.3
+# Ipopt 3.12 is the last version to ship thirdpary dependencies
+# Ipopt 3.13 and higher require to download
+# Using GFortan 10 requires additional Fortran flags for Mumps 4.10
+# See https://github.com/coin-or-tools/ThirdParty-Mumps/issues/4
 # http://www.coin-or.org/Ipopt/documentation/node10.html
 # Command 'make test' is disabled : wine has to be used to run tests
-RUN wget http://www.coin-or.org/download/source/Ipopt/Ipopt-3.13.3.tgz -O ipopt_src.tgz && \
+RUN wget http://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.9.tgz -O ipopt_src.tgz && \
     mkdir -p /opt/CoinIpopt && \
     mkdir -p ipopt_src && \
     tar -xf ipopt_src.tgz --strip 1 -C ipopt_src && \
@@ -47,6 +50,7 @@ RUN wget http://www.coin-or.org/download/source/Ipopt/Ipopt-3.13.3.tgz -O ipopt_
     CC=/usr/src/mxe/usr/bin/x86_64-w64-mingw32.static.posix-gcc \
     CXX=/usr/src/mxe/usr/bin/x86_64-w64-mingw32.static.posix-g++ \
     F77=/usr/src/mxe/usr/bin/x86_64-w64-mingw32.static.posix-gfortran \
+    ADD_FFLAGS=-fallow-argument-mismatch \
     ../configure \
         --disable-shared \
         --prefix=/opt/CoinIpopt \
