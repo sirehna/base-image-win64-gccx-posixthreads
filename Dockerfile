@@ -10,7 +10,7 @@ FROM dockcross/windows-static-x64-posix@sha256:a29c4145e0a61b476854bc64731d269d3
 RUN mkdir -p /opt
 WORKDIR /opt
 
-# BOOST
+# MXE packages: Bzip2, BOOST, OpenSSL, ZLib
 RUN cd /usr/src/mxe &&  \
     make TARGET=x86_64-w64-mingw32.static.posix bzip2 && \
     make TARGET=x86_64-w64-mingw32.static.posix boost && \
