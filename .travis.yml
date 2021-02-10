@@ -15,7 +15,7 @@ before_script:
 - docker pull sirehna/base-image-win64-gccx-posixthreads || true
 
 script:
-- docker build --pull --cache-from sirehna/base-image-win64-gccx-posixthreads --tag sirehna/base-image-win64-gccx-posixthreads:`date '+%Y%m%d'`-`git rev-parse --short HEAD` .
+- docker build --pull --cache-from sirehna/base-image-win64-gccx-posixthreads --tag sirehna/base-image-win64-gccx-posixthreads:`date '+%Y%m%d'`-`git log -n 1 --pretty=format:%h -- Dockerfile` .
 
 after_script:
 - docker images
@@ -23,7 +23,7 @@ after_script:
 after_success:
 - if [[ "$TRAVIS_BRANCH" == "master" ]]; then
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
-  docker push sirehna/base-image-win64-gccx-posixthreads:`date '+%Y%m%d'`-`git rev-parse --short HEAD` ;
+  docker push sirehna/base-image-win64-gccx-posixthreads:`date '+%Y%m%d'`-`git log -n 1 --pretty=format:%h -- Dockerfile` ;
   fi
 
 notifications:
