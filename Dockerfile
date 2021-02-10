@@ -1,10 +1,15 @@
+# Build depends on dockcross/windows-static-x64-posix
+#
 # docker run -it dockcross/windows-x64-posix:latest /bin/bash
-# docker images --digests | grep dockcross/windows-static-x64-posix
-# FROM dockcross/windows-static-x64-posix:latest
+#
 # Previous SHA:
 # - 14fb6d86d7ca39f6129b362f795c3e0d6c660ae1a8898325d274c20e2e955f5c -> gcc5.5 version
-# - a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e -> tag: 20210109-7e58f93, gcc10.2 version
-
+# - 8a330f2910f4c1cad9ff4bf46b4b9579028484c34a4f984e09f8466fd6ec9fd0 -> tag: 20201116-0216d09, gcc 9.2.0 version
+# - a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e -> tag: 20210109-7e58f93, gcc 10.2 version
+#
+# One can list and check SHA256 signatures with command
+#
+# docker images --digests dockcross/windows-static-x64-posix
 FROM dockcross/windows-static-x64-posix@sha256:a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e
 
 RUN mkdir -p /opt
