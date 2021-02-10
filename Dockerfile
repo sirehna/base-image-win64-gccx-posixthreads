@@ -154,6 +154,8 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-1.8/hdf5-1.8.2
     echo "COMMENT Fixed Fortran mod install bug" && \
     mkdir -p bin/static/Release && \
     cp bin/static/*.mod bin/static/Release/. && \
+    mkdir -p bin/shared/Release && \
+    cp bin/static/*.mod bin/shared/Release/. && \
     make install && \
     cd .. && \
     rm -rf HDF5_build && \
