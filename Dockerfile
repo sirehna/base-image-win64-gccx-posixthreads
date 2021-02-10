@@ -14,7 +14,7 @@
 # One can list and check SHA256 signatures with command
 #
 # docker images --digests dockcross/windows-static-x64-posix
-FROM dockcross/windows-static-x64-posix@sha256:a29c4145e0a61b476854bc64731d269d35a35bef5d4ad7504c565da01567c72e
+FROM dockcross/windows-static-x64-posix@sha256:b8be5e48c1c2c4c4cd29bd6a33aca74c67f6d4eaadd7a70d50b6abf3e78ac195
 RUN mkdir -p /opt
 WORKDIR /opt
 # MXE packages: Bzip2, BOOST, OpenSSL, ZLib
